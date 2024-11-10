@@ -1,0 +1,5 @@
+#
+# To install execute "pip install -r requirements.txt"
+#
+python-dotenv>=1.0.1
+azure-cognitiveservices-speech>=1.40.0

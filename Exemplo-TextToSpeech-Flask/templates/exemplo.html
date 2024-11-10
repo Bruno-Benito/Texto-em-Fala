@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela do Exemplo</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+</head>
+
+<body>
+  <div class="container h-100">
+    <div class="row justify-content-sm-center h-100">
+      <div>
+        <div class="card shadow-lg my-4">
+          <div class="card-body">
+            <a href="/">Voltar ao index</a>
+          </div>
+          <div class="card-body p-5">
+            <h1 class="fs-4 card-title fw-bold mb-4">Exemplo de Conversão de Texto para Fala</h1>
+            <div class="py-2">
+              <button type="button" class="btn btn-success" onClick="startSpeech()">
+                <img src="/static/images/start.png"  alt="Iniciar Fala" width="30" height="30"> Iniciar Fala
+              </button>
+              <button type="button" class="btn btn-secondary" onClick="cleanText()">
+                <img src="/static/images/clean.png"  alt="Limpar Texto" width="30" height="30"> Limpar Texto
+              </button>
+            </div>
+            <!-- Dropdown para escolher idioma -->
+            <div class="py-2">
+              <label for="idioma" class="form-label">Escolher Idioma da Fala:</label>
+              <select id="idioma" class="form-select" onchange="updateLanguage()">
+                <option value="pt-BR">Português (Brasil)</option>
+                <option value="en-US">Inglês (EUA)</option>
+                <option value="es-ES">Espanhol (Espanha)</option>
+                <option value="fr-FR">Francês (França)</option>
+                <option value="it-IT">Italiano (Itália)</option>
+              </select>
+            </div>
+            <div class="alert alert-info" id="mensagem" hidden></div>
+            <div class="mt-2">
+              <h4>Digite um Texto logo abaixo:</h4>
+              <textarea rows="10" cols="110" name="meuTexto" id="meuTexto"> </textarea>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-3 text-muted">
+          Exemplo de Aula - Prof. Mauricio de Oliveira Dian
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/requests.js"></script>
+
+  <script>
+  function startSpeech() {
+    const texto = document.getElementById("meuTexto").value;
+    const idioma = document.getElementById("idioma").value;
+    const mensagem = document.getElementById("mensagem");
+
+    if (texto.trim() === "") {
+      mensagem.hidden = false;
+      mensagem.innerHTML = "Por favor, insira um texto para conversão.";
+      return;
+    }
+
+    mensagem.hidden = true;
+
+    fetch('/start_speech', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        texto: texto,
+        idioma: idioma // Envia o idioma junto com o texto
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.message);
+    })
+    .catch(error => console.error('Erro ao enviar requisição:', error));
+  }
+</script>
